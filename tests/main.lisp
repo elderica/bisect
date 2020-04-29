@@ -100,3 +100,30 @@
   (ok (eql (bisect:bisect-left '(1 2 2 3 3 3 4 4 4 4) 3.5) 6))
   (ok (eql (bisect:bisect-left '(1 2 2 3 3 3 4 4 4 4) 4) 6))
   (ok (eql (bisect:bisect-left '(1 2 2 3 3 3 4 4 4 4) 5) 10)))
+
+(defun adjvec-from (lst)
+  (let ((len (length lst)))
+    (make-array len
+                :fill-pointer len
+                :adjustable t
+                :initial-contents lst)))
+
+(deftest insort-right-test
+  (ok (let ((v (adjvec-from '(1 3 5 5 5 6 7))))
+        (equalp
+          (bisect:insort-right v 6)
+          (vector 1 3 5 5 5 6 6 7))))
+  (ok (let ((l (list 1 3 5 5 5 6 7)))
+        (equalp
+          (bisect:insort-right l 6)
+          (list 1 3 5 5 5 6 6 7)))))
+
+(deftest insort-left-test
+  (ok (let ((v (adjvec-from '(1 3 5 5 5 6 7))))
+        (equalp
+          (bisect:insort-left v 2)
+          (vector 1 2 3 5 5 5 6 7))))
+  (ok (let ((l (list 1 3 5 5 5 6 7)))
+        (equalp
+          (bisect:insort-left l 2)
+          (list 1 2 3 5 5 5 6 7)))))
