@@ -8,6 +8,14 @@
 (in-package :bisect)
 
 (defun bisect-right (seq x &optional (lo 0) (hi (length seq)))
+  "Return the index where to insert item x in sequence seq, assuming seq is sorted.
+
+The return value i is such that all e in (subseq seq 0 i) have e <= x, and all e in
+(subseq seq i) have e > x. So if x already appears in the sequence, i points just
+beyond the rightmost x already there.
+
+Optional args lo (default 0) and hi (default (length seq)) bound the
+slice of seq to be searched."
   (let ((cmp (etypecase x
                (number #'<)
                (character #'char<)
@@ -19,6 +27,14 @@
             (setf lo (1+ mid)))))))
 
 (defun bisect-left (seq x &optional (lo 0) (hi (length seq)))
+  "Return the index where to insert item x in sequence seq, assuming seq is sorted.
+
+The return value i is such that all e in (subseq seq 0 i) have e < x, and all e in
+(subseq seq i) have e >= x. So if x already appears in the sequence, i points just
+before the leftmost x already there.
+
+Optional args lo (default 0) and hi (default (length seq)) bound the
+slice of seq to be searched."
   (let ((cmp (etypecase x
                (number #'<)
                (character #'char<)
@@ -48,12 +64,24 @@
   vec)
 
 (defun insort-right (seq x &optional (lo 0) (hi (length seq)))
+ "Insert item x in sequence seq, and keep it sorted assuming seq is sorted.
+
+If x is already in seq, insert it to the right of the rightmost x.
+
+Optional args lo (default 0) and hi (default (length seq)) bound the
+slice of seq to be searched. "
   (let ((lo (bisect-right seq x lo hi)))
     (etypecase seq
       (list (%list-insert-at seq lo x))
       (vector (%vector-insert-at seq lo x)))))
 
 (defun insort-left (seq x &optional (lo 0) (hi (length seq)))
+ "Insert item x in sequence seq, and keep it sorted assuming seq is sorted.
+
+If x is already in seq, insert it to the left of the leftmost seq.
+
+Optional args lo (default 0) and hi (default (length seq)) bound the
+slice of seq to be searched. "
   (let ((lo (bisect-left seq x lo hi)))
     (etypecase seq
       (list (%list-insert-at seq lo x))
