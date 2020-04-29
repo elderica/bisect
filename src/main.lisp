@@ -16,6 +16,9 @@ beyond the rightmost x already there.
 
 Optional args lo (default 0) and hi (default (length seq)) bound the
 slice of seq to be searched."
+  (check-type x (or number character string))
+  (when (minusp lo)
+    (error "lo must be non-negative"))
   (let ((cmp (etypecase x
                (number #'<)
                (character #'char<)
@@ -35,6 +38,9 @@ before the leftmost x already there.
 
 Optional args lo (default 0) and hi (default (length seq)) bound the
 slice of seq to be searched."
+  (check-type x (or number character string))
+  (when (minusp lo)
+    (error "lo must be non-negative"))
   (let ((cmp (etypecase x
                (number #'<)
                (character #'char<)
@@ -70,6 +76,7 @@ If x is already in seq, insert it to the right of the rightmost x.
 
 Optional args lo (default 0) and hi (default (length seq)) bound the
 slice of seq to be searched. "
+  (check-type seq (or list vector))
   (let ((lo (bisect-right seq x lo hi)))
     (etypecase seq
       (list (%list-insert-at seq lo x))
@@ -82,6 +89,7 @@ If x is already in seq, insert it to the left of the leftmost seq.
 
 Optional args lo (default 0) and hi (default (length seq)) bound the
 slice of seq to be searched. "
+  (check-type seq (or list vector))
   (let ((lo (bisect-left seq x lo hi)))
     (etypecase seq
       (list (%list-insert-at seq lo x))
